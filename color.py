@@ -27,6 +27,6 @@ if __name__ == '__main__':
 	training_files = sorted(glob.glob(os.path.join(path_to_dataset,'Train400Img/*.jpg')) , key = numericalSort)
 
 	for idx , path in enumerate(training_files): #traverse the training images
-		image = np.array(Image.open(path))
-		print image.shape
-		print type(image)
+		image = np.array((Image.open(path)).convert('L'))
+		truthimage = np.array(Image.open(path))
+		print image.shape , truthimage.shape
