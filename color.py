@@ -15,34 +15,47 @@ def numericalSort(value):
     return parts
 
 def preprocess(path):
+	
 	image = np.array((Image.open(path)).convert('L'))
-	image = image.reshape((1,1,500,333))
-	truthimage = np.array(Image.open(path))
+	image = image.reshape((1,1,500,333)) #500x333 being size of image
+	
+	truthimage = np.array(Image.open(path)) 
 	truthimage = rgb2luv(truthimage) #CIELUV Color Space
+	
 	return truthimage,image
 
 def main():
 
-	model = Sequential()
-	model.add(Convolution2D(64, 3,3, border_mode='same', input_shape=(1,500,333),activation = 'relu'))
-	model.add(Convolution2D(64, 3,3, border_mode='same', activation = 'relu'))
-	model.add(MaxPooling2D())
+	model10 = Sequential()
+	model10.add(Convolution2D(64, 3,3, border_mode='same', input_shape=(1,500,333),activation = 'relu'))
+	model10.add(Convolution2D(64, 3,3, border_mode='same', activation = 'relu'))
 
-	model.add(Convolution2D(128, 3,3, border_mode='same',activation = 'relu'))
-	model.add(Convolution2D(128, 3,3, border_mode='same', activation = 'relu'))
-	model.add(MaxPooling2D())
 
-	model.add(Convolution2D(256, 3,3, border_mode='same',activation = 'relu'))
-	model.add(Convolution2D(256, 3,3, border_mode='same', activation = 'relu'))
-	model.add(Convolution2D(256, 3,3, border_mode='same', activation = 'relu'))
-	model.add(MaxPooling2D())
+	model20 = Sequential()
+	model20.add(model10)
+	model20.add(MaxPooling2D())
+	model20.add(Convolution2D(128, 3,3, border_mode='same',activation = 'relu'))
+	model20.add(Convolution2D(128, 3,3, border_mode='same', activation = 'relu'))
+	
 
-	model.add(Convolution2D(512, 3,3, border_mode='same',activation = 'relu'))
-	model.add(Convolution2D(512, 3,3, border_mode='same', activation = 'relu'))
-	model.add(Convolution2D(512, 3,3, border_mode='same', activation = 'relu'))
-	model.add(MaxPooling2D())
+	model30 = Sequential()
+	model30.add(model20)
+	model30.add(MaxPooling2D())
+	model30.add(Convolution2D(256, 3,3, border_mode='same',activation = 'relu'))
+	model30.add(Convolution2D(256, 3,3, border_mode='same', activation = 'relu'))
+	model30.add(Convolution2D(256, 3,3, border_mode='same', activation = 'relu'))
+	
 
-	model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+	model40 = Sequential()
+	model40.add(model30)
+	model40.add(MaxPooling2D())
+	model40.add(Convolution2D(512, 3,3, border_mode='same',activation = 'relu'))
+	model40.add(Convolution2D(512, 3,3, border_mode='same', activation = 'relu'))
+	model40.add(Convolution2D(512, 3,3, border_mode='same', activation = 'relu'))
+
+	model40.add(Convolution2D(256, 3,3, border_mode='same', activation = 'relu'))
+
+	model40.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 	print "Model Compiled"
 
@@ -53,7 +66,7 @@ def main():
 		if idx < 1:
 			truthimage, image = preprocess(path)
 			print image.shape , truthimage.shape
-			output = model.predict(image)
+			output = model40.predict(image)
 			print output.shape
 
 
