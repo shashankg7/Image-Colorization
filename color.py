@@ -6,6 +6,7 @@ from skimage.color import rgb2luv
 from keras.models import Sequential
 from keras.layers import Convolution2D 
 from keras.layers import MaxPooling2D
+from keras.layers import Merge
 
 
 numbers = re.compile(r'(\d+)')
@@ -46,16 +47,27 @@ def main():
 	model30.add(Convolution2D(256, 3,3, border_mode='same', activation = 'relu'))
 	
 
-	model40 = Sequential()
-	model40.add(model30)
-	model40.add(MaxPooling2D())
-	model40.add(Convolution2D(512, 3,3, border_mode='same',activation = 'relu'))
-	model40.add(Convolution2D(512, 3,3, border_mode='same', activation = 'relu'))
-	model40.add(Convolution2D(512, 3,3, border_mode='same', activation = 'relu'))
+	# model40 = Sequential()
+	# model40.add(model30)
+	# model40.add(MaxPooling2D())
+	# model40.add(Convolution2D(512, 3,3, border_mode='same',activation = 'relu'))
+	# model40.add(Convolution2D(512, 3,3, border_mode='same', activation = 'relu'))
+	# model40.add(Convolution2D(512, 3,3, border_mode='same', activation = 'relu'))
 
-	model40.add(Convolution2D(256, 3,3, border_mode='same', activation = 'relu'))
+	# model40.add(Convolution2D(256, 1,1, border_mode='same', activation = 'relu'))
 
-	model40.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+	# model41 = Merge([model40,model30] , mode = 'sum')
+	# model41.add(Convolution2D(128, 3,3, border_mode='same', activation = 'relu'))
+
+	# model42 = Merge([model41,model20] , mode = 'sum')
+	# model42.add(Convolution2D(64, 3,3, border_mode='same', activation = 'relu'))
+
+	# model50 = Merge([model10,model41,model42,model40],mode = 'concat')
+	# model50.add(Convolution2D(256, 3,3, border_mode='same',activation = 'relu'))
+	# model50.add(Convolution2D(64, 3,3, border_mode='same', activation = 'relu'))
+	# model50.add(Convolution2D(64, 3,3, border_mode='same', activation = 'relu'))
+
+	model30.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 	print "Model Compiled"
 
@@ -66,7 +78,7 @@ def main():
 		if idx < 1:
 			truthimage, image = preprocess(path)
 			print image.shape , truthimage.shape
-			output = model40.predict(image)
+			output = model30.predict(image)
 			print output.shape
 
 
