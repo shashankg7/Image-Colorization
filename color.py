@@ -20,10 +20,7 @@ def numericalSort(value):
 def preprocess(path):
 
 	image = np.array((Image.open(path)).convert('L'))
-	# pdb.set_trace()
-	image.resize((336,512))
-	print image.shape
-
+	pdb.set_trace()
 	image = image.reshape((1,1,512,336)) #500x333 being size of image
 
 	truthimage = np.array(Image.open(path))
@@ -36,11 +33,6 @@ def main():
 	model10 = Sequential()
 	model10.add(Convolution2D(64, 3,3, border_mode='same', input_shape=(1,512,336),activation = 'relu'))
 	model10.add(Convolution2D(64, 3,3, border_mode='same', activation = 'relu'))
-
-	model11 = Sequential()
-	model11.add(model10)
-	model11.add(MaxPooling2D())
-	model11.add(MaxPooling2D())
 
 
 	model20 = Sequential()
@@ -80,38 +72,25 @@ def main():
 	model42.add(Convolution2D(64, 3,3, border_mode='same', activation = 'relu'))
 
 	model50 = Sequential()
-	model50.add(Merge([model11,model41,model42,model40],mode = 'concat',concat_axis = 1))
+	model50.add(Merge([model10,model41,model42,model40],mode = 'concat'))
 	model50.add(Convolution2D(256, 3,3, border_mode='same',activation = 'relu'))
 	model50.add(Convolution2D(64, 3,3, border_mode='same', activation = 'relu'))
 	model50.add(Convolution2D(64, 3,3, border_mode='same', activation = 'relu'))
 
-	modelU = Sequential()
-	modelU.add(model50)
-	modelU.add(Convolution2D(50,1,1,border_mode='same', activation = 'relu'))
-
-	modelV = Sequential()
-	modelV.add(model50)
-	modelV.add(Convolution2D(50,1,1,border_mode='same', activation = 'relu'))
-
-	modelU.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-	modelV.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-
+	model50.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 	print "Model Compiled"
 
 
-	path_to_dataset = "./ILSVRC2015/Data/DET/test"
+	path_to_dataset = "./trial"
 	training_files = sorted(glob.glob(os.path.join(path_to_dataset,'*.JPEG')) , key = numericalSort)
 	for idx , path in enumerate(training_files): #traverse the training images
 		if idx < 1:
 			truthimage, image = preprocess(path)
 			print image.shape , truthimage.shape
-			output = modelU.predict(image)
+			output = model30.predict(image)
 			print output.shape
 
 
 if __name__ == '__main__':
 	main()
-
-
-
